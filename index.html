@@ -9,170 +9,135 @@
 body { font-family: Arial, sans-serif; background:#f5f5f5; color: #333; }
 .container { max-width:400px; margin:auto; padding:20px; }
 .card { background:white; padding:15px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
 p { font-weight:bold; margin-bottom: 5px; }
-
-.btn {
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-  background:#ddd;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn.active {
-  background:#1a4d2e;
-  color:white;
-  transform:scale(1.02);
-}
-
-input {
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.submit {
-  background:black;
-  color:white;
-  margin-top:15px;
-  font-weight: bold;
-}
-
-.submit:disabled {
-  background: #666;
-}
-
-.result {
-  background:#e8f5e9;
-  padding:15px;
-  margin-top:20px;
-  border-radius:10px;
-}
-
-.wa-btn {
-  display: block;
-  background: #25D366;
-  color: white;
-  padding: 12px;
-  text-align: center;
-  border-radius: 8px;
-  text-decoration: none;
-  margin-top: 10px;
-}
+.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor: pointer; transition: all 0.3s ease; }
+.btn.active { background:#1a4d2e; color:white; transform:scale(1.02); }
+input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+.submit { background:black; color:white; margin-top:15px; font-weight: bold; }
+.submit:disabled { background: #666; cursor: not-allowed; }
+.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; line-height: 1.5; }
+.wa-btn { display: block; background: #25D366; color: white; padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; margin-top: 10px; font-weight: bold; }
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h2>⚡ Questionnaire rapide</h2>
+  <h2>⚡ Questionnaire rapide</h2>
+  <div class="card">
 
-<div class="card">
+    <p>0. Quel est ton numéro WhatsApp ?</p>
+    <input id="phone" type="tel" placeholder="+229...">
 
-<p>0. Quel est ton numéro WhatsApp ?</p>
-<input id="phone" type="tel">
+    <p>1. Combien d’enfants as-tu ?</p>
+    <input id="nb_enfants" type="number" placeholder="0">
 
-<p>1. Combien d’enfants as-tu ?</p>
-<input id="nb_enfants" type="number">
+    <p>2. Quelle est ta situation ?</p>
+    <button class="btn" onclick="select(this,'situation','celibataire')">Célibataire</button>
+    <button class="btn" onclick="select(this,'situation','couple')">En couple</button>
+    <button class="btn" onclick="select(this,'situation','mariee')">Mariée</button>
 
-<p>2. Quelle est ta situation ?</p>
-<button class="btn" onclick="select(this,'situation','celibataire')">Célibataire</button>
-<button class="btn" onclick="select(this,'situation','couple')">En couple</button>
-<button class="btn" onclick="select(this,'situation','mariee')">Mariée</button>
+    <p>3. T’occupes-tu du foyer ?</p>
+    <button class="btn" onclick="select(this,'foyer',true)">Oui</button>
+    <button class="btn" onclick="select(this,'foyer',false)">Non</button>
 
-<p>3. T’occupes-tu du foyer ?</p>
-<button class="btn" onclick="select(this,'foyer',true)">Oui</button>
-<button class="btn" onclick="select(this,'foyer',false)">Non</button>
+    <p>4. Combien dépenses-tu par semaine pour le marché ? (FCFA)</p>
+    <input id="depense" type="number">
 
-<p>4. Dépenses hebdo (FCFA)</p>
-<input id="depense" type="number">
+    <p>5. Combien de fois vas-tu au marché par semaine ?</p>
+    <input id="frequence_marche" type="number" min="0" max="7">
 
-<p>5. Fréquence marché</p>
-<input id="frequence_marche" type="number">
+    <p>6. As-tu déjà une activité qui te rapporte de l’argent ?</p>
+    <button class="btn" onclick="select(this,'activite',true)">Oui</button>
+    <button class="btn" onclick="select(this,'activite',false)">Non</button>
 
-<p>6. As-tu une activité ?</p>
-<button class="btn" onclick="select(this,'activite',true)">Oui</button>
-<button class="btn" onclick="select(this,'activite',false)">Non</button>
+    <p>7. Qu’est-ce qui te bloque aujourd’hui ?</p>
+    <button class="btn" onclick="select(this,'blocage','argent')">Manque d’argent</button>
+    <button class="btn" onclick="select(this,'blocage','temps')">Manque de temps</button>
+    <button class="btn" onclick="select(this,'blocage','idee')">Manque d’idée</button>
+    <button class="btn" onclick="select(this,'blocage','peur')">Peur d’échouer</button>
+    <button class="btn" onclick="select(this,'blocage','autre')">Autre</button>
 
-<p>7. Blocage</p>
-<button class="btn" onclick="select(this,'blocage','argent')">Argent</button>
-<button class="btn" onclick="select(this,'blocage','temps')">Temps</button>
-<button class="btn" onclick="select(this,'blocage','idee')">Idée</button>
+    <p>8. Si tu avais un petit capital, commencerais-tu ?</p>
+    <button class="btn" onclick="select(this,'capital',true)">Oui</button>
+    <button class="btn" onclick="select(this,'capital',false)">Non</button>
 
-<p>8. Si capital ?</p>
-<button class="btn" onclick="select(this,'capital',true)">Oui</button>
-<button class="btn" onclick="select(this,'capital',false)">Non</button>
+    <p>9. De combien as-tu besoin ?</p>
+    <button class="btn" onclick="select(this,'budget','5-20')">5 000 à 20 000 FCFA</button>
+    <button class="btn" onclick="select(this,'budget','20-50')">20 000 à 50 000 FCFA</button>
+    <button class="btn" onclick="select(this,'budget','50-100')">50 000 à 100 000 FCFA</button>
+    <button class="btn" onclick="select(this,'budget','100+')">Plus de 100 000 FCFA</button>
+    <button class="btn" onclick="select(this,'budget','unknown')">Je ne sais pas</button>
 
-<p>9. Budget</p>
-<button class="btn" onclick="select(this,'budget','20-50')">20-50k</button>
-<button class="btn" onclick="select(this,'budget','50-100')">50-100k</button>
+    <p>10. Serais-tu intéressée pour gagner de l’argent avec ce que tu fais déjà ?</p>
+    <button class="btn" onclick="select(this,'interet',true)">Oui</button>
+    <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-<p>10. Intérêt</p>
-<button class="btn" onclick="select(this,'interet',true)">Oui</button>
-<button class="btn" onclick="select(this,'interet',false)">Non</button>
+    <button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
+    <div id="result"></div>
 
-<button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
-
-<div id="result"></div>
-
-</div>
+  </div>
 </div>
 
 <script>
+let data = {};
 
-let data = {}
-
-function select(el,key,val){
-  el.parentNode.querySelectorAll(".btn").forEach(b=>b.classList.remove("active"))
-  el.classList.add("active")
-  data[key]=val
+function select(element, key, value){
+  let buttons = element.parentNode.querySelectorAll(".btn");
+  buttons.forEach(btn => btn.classList.remove("active"));
+  element.classList.add("active");
+  data[key] = value;
 }
 
 async function send(){
+  const btnSubmit = document.getElementById("submit-btn");
+  
+  data.phone = document.getElementById("phone").value;
+  data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
+  data.depense = parseInt(document.getElementById("depense").value || 0);
+  data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
 
-  data.phone = document.getElementById("phone").value
-  data.nb_enfants = parseInt(document.getElementById("nb_enfants").value||0)
-  data.depense = parseInt(document.getElementById("depense").value||0)
-  data.frequence_marche = parseInt(document.getElementById("frequence_marche").value||0)
-
-  const required = ['phone','situation','foyer','activite','blocage','capital','budget','interet']
-  if(required.some(k=>data[k]===undefined)){
-    alert("Remplis tout")
-    return
+  const keysRequired = ['phone', 'situation', 'foyer', 'activite', 'blocage', 'capital', 'budget', 'interet'];
+  if(keysRequired.some(key => data[key] === undefined || data[key] === "")){
+    alert("Merci de répondre à toutes les questions.");
+    return;
   }
 
-  document.getElementById("submit-btn").innerText="Analyse..."
-  
-  const res = await fetch("https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec",{
-    method:"POST",
-    headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify(data)
-  })
+  btnSubmit.innerText = "Analyse en cours...";
+  btnSubmit.disabled = true;
 
-  const r = await res.json()
+  try {
+    // Utilisation de ta nouvelle URL de déploiement
+    const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
 
-  let wa = `https://wa.me/229XXXXXXXX?text=Je suis prête 🚀`
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(data)
+    });
 
-  document.getElementById("result").innerHTML = `
-    <div class="result">
-    Score: ${r.score}<br>
-    Profil: ${r.profil}<br>
-    ${r.profil==="PRETE" ? `<a href="${wa}" class="wa-btn">WhatsApp</a>`:""}
-    </div>
-  `
+    const r = await response.json();
+    let whatsappUrl = `https://wa.me/229XXXXXXXX?text=${encodeURIComponent("Bonjour, je suis prête à lancer mon activité avec Mwa$ia 🚀")}`;
 
+    let content = `<div class="result"><b>Score :</b> ${r.score}<br><b>Profil :</b> ${r.profil}<br>`;
+    if(r.profil === "PRETE"){
+      content += `<br><a href="${whatsappUrl}" class="wa-btn">🔥 Rejoindre maintenant</a>`;
+    } else {
+      content += `<br><span>Nous reviendrons vers toi rapidement 💪</span>`;
+    }
+    content += `</div>`;
+    
+    document.getElementById("result").innerHTML = content;
+    btnSubmit.innerText = "Terminé";
+
+  } catch(err) {
+    console.error(err);
+    alert("L'analyse a fonctionné mais l'enregistrement peut avoir échoué. Vérifie ton script.");
+    btnSubmit.disabled = false;
+    btnSubmit.innerText = "Réessayer";
+  }
 }
-
 </script>
-
 </body>
 </html>
