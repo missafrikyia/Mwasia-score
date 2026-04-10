@@ -16,7 +16,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 .submit { background:black; color:white; margin-top:15px; font-weight: bold; }
 .submit:disabled { background: #666; cursor: not-allowed; }
 .result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; line-height: 1.5; }
-.wa-btn { display: block; background: #25D366; color: white; padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; margin-top: 10px; font-weight: bold; }
+.wa-btn { display: block; background: #25D366; color: white; padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; margin-top: 15px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
 </style>
 </head>
 
@@ -73,7 +73,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
     <button class="btn" onclick="select(this,'interet',true)">Oui</button>
     <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-    <button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
+    <button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
     <div id="result"></div>
 
   </div>
@@ -107,7 +107,6 @@ async function send(){
   btnSubmit.disabled = true;
 
   try {
-    // Utilisation de ta nouvelle URL de déploiement
     const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
 
     const response = await fetch(url, {
@@ -118,22 +117,26 @@ async function send(){
     });
 
     const r = await response.json();
-    let whatsappUrl = `https://wa.me/229XXXXXXXX?text=${encodeURIComponent("Bonjour, je suis prête à lancer mon activité avec Mwa$ia 🚀")}`;
+    
+    // Ton lien de groupe WhatsApp
+    let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
 
-    let content = `<div class="result"><b>Score :</b> ${r.score}<br><b>Profil :</b> ${r.profil}<br>`;
+    let content = `<div class="result"><b>Félicitations !</b><br>Score : ${r.score} - Profil : ${r.profil}<br>`;
+    
     if(r.profil === "PRETE"){
-      content += `<br><a href="${whatsappUrl}" class="wa-btn">🔥 Rejoindre maintenant</a>`;
+      content += `<br><b>Tu es prête !</b><br>Rejoins notre communauté pour commencer à générer des revenus dès maintenant.`;
+      content += `<br><a href="${groupLink}" class="wa-btn">🚀 OUI, JE VEUX GAGNER DE L'ARGENT MAINTENANT !</a>`;
     } else {
-      content += `<br><span>Nous reviendrons vers toi rapidement 💪</span>`;
+      content += `<br><span>Ton profil est en cours de validation. Nous reviendrons vers toi pour t'aider à te structurer 💪</span>`;
     }
     content += `</div>`;
     
     document.getElementById("result").innerHTML = content;
-    btnSubmit.innerText = "Terminé";
+    btnSubmit.style.display = "none"; // Cache le bouton après analyse
 
   } catch(err) {
     console.error(err);
-    alert("L'analyse a fonctionné mais l'enregistrement peut avoir échoué. Vérifie ton script.");
+    alert("Erreur lors de l'analyse. Vérifie ta connexion.");
     btnSubmit.disabled = false;
     btnSubmit.innerText = "Réessayer";
   }
