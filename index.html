@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Mwa$ia</title>
 
 <style>
-body { font-family: Arial; background:#f5f5f5; }
+body { font-family: Arial, sans-serif; background:#f5f5f5; color: #333; }
 .container { max-width:400px; margin:auto; padding:20px; }
-.card { background:white; padding:15px; border-radius:10px; margin-top:15px; }
+.card { background:white; padding:15px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-p { font-weight:bold; }
+p { font-weight:bold; margin-bottom: 5px; }
 
 .btn {
   width:100%;
@@ -19,6 +20,8 @@ p { font-weight:bold; }
   border-radius:8px;
   font-size:16px;
   background:#ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn.active {
@@ -31,19 +34,43 @@ input {
   width:100%;
   padding:10px;
   margin-top:8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 .submit {
   background:black;
   color:white;
   margin-top:15px;
+  font-weight: bold;
+}
+
+.submit:disabled {
+  background: #666;
+  cursor: not-allowed;
 }
 
 .result {
   background:#e8f5e9;
-  padding:10px;
-  margin-top:10px;
+  padding:15px;
+  margin-top:20px;
   border-radius:10px;
+  border: 1px solid #c8e6c9;
+  line-height: 1.5;
+}
+
+.wa-btn {
+  display: block;
+  background: #25D366;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -103,7 +130,7 @@ input {
 <button class="btn" onclick="select(this,'interet',true)">Oui</button>
 <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-<button class="btn submit" onclick="send()">Analyser</button>
+<button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
 
 <div id="result"></div>
 
@@ -111,65 +138,79 @@ input {
 </div>
 
 <script>
-
-let data = {}
+let data = {};
 
 function select(element, key, value){
-  let buttons = element.parentNode.querySelectorAll(".btn")
-  buttons.forEach(btn => btn.classList.remove("active"))
-  element.classList.add("active")
-  data[key] = value
+  let buttons = element.parentNode.querySelectorAll(".btn");
+  buttons.forEach(btn => btn.classList.remove("active"));
+  element.classList.add("active");
+  data[key] = value;
 }
 
 async function send(){
+  const btnSubmit = document.getElementById("submit-btn");
+  
+  // Récupération des valeurs d'input
+  data.phone = document.getElementById("phone").value;
+  data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
+  data.depense = parseInt(document.getElementById("depense").value || 0);
+  data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
 
-  data.phone = document.getElementById("phone").value
-  data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0)
-  data.depense = parseInt(document.getElementById("depense").value || 0)
-  data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0)
+  // Vérification si tout est rempli
+  const keysRequired = ['phone', 'situation', 'foyer', 'activite', 'blocage', 'capital', 'budget', 'interet'];
+  const missing = keysRequired.some(key => data[key] === undefined || data[key] === "");
 
-  if(
-    !data.phone ||
-    data.foyer === undefined ||
-    data.activite === undefined ||
-    data.capital === undefined ||
-    data.interet === undefined ||
-    data.blocage === undefined ||
-    data.budget === undefined ||
-    data.situation === undefined
-  ){
-    alert("Merci de répondre à toutes les questions")
-    return
+  if(missing){
+    alert("Merci de répondre à toutes les questions avant de lancer l'analyse.");
+    return;
   }
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbxlx-ifskYppNSiFCpKuOlAPuTdKlnYxZiQnZTmOJQQhuhEyX6ZNSUpry-Lha0IU_mp5Q/exec", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
-  })
+  // UI : Désactiver le bouton pendant l'envoi
+  btnSubmit.innerText = "Analyse en cours...";
+  btnSubmit.disabled = true;
 
-  const r = await res.json()
+  try {
+    const url = "https://script.google.com/macros/s/AKfycbxlx-ifskYppNSiFCpKuOlAPuTdKlnYxZiQnZTmOJQQhuhEyX6ZNSUpry-Lha0IU_mp5Q/exec";
 
-  let whatsappLink = ""
+    // Astuce CORS : Envoyer en text/plain
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      body: JSON.stringify(data)
+    });
 
-  if(r.profil === "PRETE"){
-    let message = encodeURIComponent("Bonjour, je suis prête à lancer mon activité avec Mwa$ia 🚀")
-    whatsappLink = `https://wa.me/229XXXXXXXX?text=${message}`
-  }
+    const r = await response.json();
 
-  document.getElementById("result").innerHTML = `
-    <div class="result">
-    <b>Score :</b> ${r.score}<br>
-    <b>Profil :</b> ${r.profil}<br>
-    ${
-      r.profil === "PRETE"
-      ? `<br><a href="${whatsappLink}">🔥 Rejoindre maintenant</a>`
-      : `<br><span>Continue à te structurer 💪</span>`
+    let resultContainer = document.getElementById("result");
+    let whatsappMsg = encodeURIComponent("Bonjour, je suis prête à lancer mon activité avec Mwa$ia 🚀");
+    let whatsappUrl = `https://wa.me/229XXXXXXXX?text=${whatsappMsg}`; // Remplace XXXXXXXX par ton numéro
+
+    let content = `
+      <div class="result">
+        <b>Score :</b> ${r.score}<br>
+        <b>Profil :</b> ${r.profil}<br>
+    `;
+
+    if(r.profil === "PRETE"){
+      content += `<br><a href="${whatsappUrl}" class="wa-btn">🔥 Rejoindre maintenant</a>`;
+    } else {
+      content += `<br><span>Continue à te structurer 💪 Nous reviendrons vers toi !</span>`;
     }
-    </div>
-  `
-}
 
+    content += `</div>`;
+    resultContainer.innerHTML = content;
+    btnSubmit.innerText = "Terminé";
+
+  } catch(err) {
+    console.error("Erreur:", err);
+    alert("Une erreur est survenue. Vérifiez que votre script Google est bien déployé pour 'Tout le monde'.");
+    btnSubmit.disabled = false;
+    btnSubmit.innerText = "Réessayer";
+  }
+}
 </script>
 
 </body>
