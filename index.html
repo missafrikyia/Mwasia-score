@@ -25,8 +25,6 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
   <h2>⚡ Questionnaire rapide</h2>
   <div class="card">
 
-    <!-- QUESTIONNAIRE (INCHANGÉ) -->
-
     <p>0. Quel est ton numéro WhatsApp ?</p>
     <input id="phone" type="tel" placeholder="+229...">
 
@@ -74,7 +72,6 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
     <button class="btn" onclick="select(this,'interet',true)">Oui</button>
     <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-    <!-- CONSENTEMENT -->
     <div class="card">
       <p>📜 Conditions</p>
       <p style="font-weight:normal;">
@@ -93,8 +90,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 
     <div id="result"></div>
 
-    <!-- SUPPRESSION -->
-    <button class="btn" onclick="deleteData()" style="background:red;color:white;">
+    <button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:30px;">
       🗑️ Supprimer mes données
     </button>
 
@@ -103,6 +99,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 
 <script>
 let data = {};
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
 function select(element, key, value){
   let buttons = element.parentNode.querySelectorAll(".btn");
@@ -112,55 +109,60 @@ function select(element, key, value){
 }
 
 async function send(){
-
   if(!document.getElementById("consent").checked){
-    alert("Tu dois accepter.");
+    alert("Tu dois accepter les conditions.");
     return;
   }
+
+  const btn = document.getElementById("submit-btn");
+  btn.innerText = "Analyse en cours...";
+  btn.disabled = true;
 
   data.phone = document.getElementById("phone").value;
   data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
   data.depense = parseInt(document.getElementById("depense").value || 0);
   data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
 
-  const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(data)
+    });
 
-  const response = await fetch(url,{
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(data)
-  });
+    const r = await response.json();
+    let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
 
-  const r = await response.json();
-
-  let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
-
-  let content = `<div class="result">
-  <b>Score :</b> ${r.score}<br>
-  <b>Profil :</b> ${r.profil}
-  `;
-
-  if(r.profil === "PRETE"){
-    content += `
-    <br><br>
-    🔥 Tu es prête !<br>
-    <a href="${groupLink}" target="_blank" class="wa-btn">
-    🚀 Rejoindre le groupe WhatsApp
-    </a>
+    let content = `<div class="result">
+    <b>Score :</b> ${r.score}<br>
+    <b>Profil :</b> ${r.profil}
     `;
-  } else {
-    content += `<br><br>Continue, on va t'aider 💪`;
+
+    if(r.profil === "PRETE"){
+      content += `
+      <br><br>
+      🔥 Tu es prête !<br>
+      <a href="${groupLink}" target="_blank" class="wa-btn">
+      🚀 Rejoindre le groupe WhatsApp
+      </a>
+      `;
+    } else {
+      content += `<br><br>Continue, on va t'aider 💪`;
+    }
+
+    content += `</div>`;
+    document.getElementById("result").innerHTML = content;
+
+  } catch (error) {
+    alert("Erreur réseau ou script. Vérifie que le déploiement est sur 'Tout le monde'.");
+  } finally {
+    btn.innerText = "Analyser mon profil";
+    btn.disabled = false;
   }
-
-  content += `</div>`;
-
-  document.getElementById("result").innerHTML = content;
 }
 
 async function deleteData(){
-
   let phone = document.getElementById("phone").value;
-
   if(!phone){
     alert("Entre ton numéro.");
     return;
@@ -168,19 +170,21 @@ async function deleteData(){
 
   if(!confirm("Supprimer tes données ?")) return;
 
-  const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "delete",
+        phone: phone
+      })
+    });
 
-  const response = await fetch(url,{
-    method:"POST",
-    body: JSON.stringify({
-      action:"delete",
-      phone:phone
-    })
-  });
-
-  const r = await response.json();
-
-  alert(r.status === "deleted" ? "Supprimé" : "Non trouvé");
+    const r = await response.json();
+    alert(r.status === "deleted" ? "Supprimé avec succès" : "Numéro non trouvé");
+  } catch (e) {
+    alert("Erreur lors de la suppression.");
+  }
 }
 </script>
 
