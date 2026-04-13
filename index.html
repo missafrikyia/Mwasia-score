@@ -109,7 +109,8 @@ function select(element, key, value){
 }
 
 async function send(){
-  if(!document.getElementById("consent").checked){
+  const consentCheckbox = document.getElementById("consent");
+  if(!consentCheckbox.checked){
     alert("Tu dois accepter les conditions.");
     return;
   }
@@ -118,10 +119,12 @@ async function send(){
   btn.innerText = "Analyse en cours...";
   btn.disabled = true;
 
+  // Capture des champs texte/nombre
   data.phone = document.getElementById("phone").value;
   data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
   data.depense = parseInt(document.getElementById("depense").value || 0);
   data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
+  data.consent = consentCheckbox.checked;
 
   try {
     const response = await fetch(SCRIPT_URL, {
@@ -133,9 +136,13 @@ async function send(){
     const r = await response.json();
     let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
 
+    // Gestion de l'affichage pour éviter le "undefined"
+    let scoreFinal = r.score !== undefined ? r.score : "Analyse finie";
+    let profilFinal = r.profil !== undefined ? r.profil : "Traitement...";
+
     let content = `<div class="result">
-    <b>Score :</b> ${r.score}<br>
-    <b>Profil :</b> ${r.profil}
+    <b>Score :</b> ${scoreFinal}<br>
+    <b>Profil :</b> ${profilFinal}
     `;
 
     if(r.profil === "PRETE"){
@@ -154,7 +161,7 @@ async function send(){
     document.getElementById("result").innerHTML = content;
 
   } catch (error) {
-    alert("Erreur réseau ou script. Vérifie que le déploiement est sur 'Tout le monde'.");
+    alert("Erreur de connexion. Vérifie que le script Google est bien déployé sur 'Tout le monde'.");
   } finally {
     btn.innerText = "Analyser mon profil";
     btn.disabled = false;
@@ -164,11 +171,11 @@ async function send(){
 async function deleteData(){
   let phone = document.getElementById("phone").value;
   if(!phone){
-    alert("Entre ton numéro.");
+    alert("Entre ton numéro pour supprimer.");
     return;
   }
 
-  if(!confirm("Supprimer tes données ?")) return;
+  if(!confirm("Supprimer définitivement tes données ?")) return;
 
   try {
     const response = await fetch(SCRIPT_URL, {
