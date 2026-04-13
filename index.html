@@ -14,9 +14,8 @@ p { font-weight:bold; margin-bottom: 5px; }
 .btn.active { background:#1a4d2e; color:white; transform:scale(1.02); }
 input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 .submit { background:black; color:white; margin-top:15px; font-weight: bold; }
-.submit:disabled { background: #666; cursor: not-allowed; }
 .result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; line-height: 1.5; }
-.wa-btn { display: block; background: #25D366; color: white; padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; margin-top: 15px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+.wa-btn { display:block; background:#25D366; color:white; padding:15px; text-align:center; border-radius:8px; text-decoration:none; margin-top:15px; font-size:18px; font-weight:bold; }
 </style>
 </head>
 
@@ -77,15 +76,13 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 
     <!-- CONSENTEMENT -->
     <div class="card">
-      <p>📜 Conditions d’utilisation</p>
+      <p>📜 Conditions</p>
       <p style="font-weight:normal;">
-        Tes données peuvent être utilisées pour générer des analyses économiques <b>anonymisées et agrégées</b> via des technologies automatisées (dont IA).  
+        Tes données peuvent être utilisées pour générer des analyses économiques <b>anonymisées</b> via des technologies automatisées (IA).  
         <br><br>
-        💰 Une partie de la valeur peut être redistribuée (royalties, opportunités).  
+        💰 Une partie de la valeur peut être redistribuée (royalties).  
         <br><br>
-        📊 Un score peut être calculé pour proposer des opportunités adaptées.  
-        <br><br>
-        🔒 Tes données ne seront jamais vendues individuellement.
+        📊 Un score peut être calculé pour proposer des opportunités.  
       </p>
       <label>
         <input type="checkbox" id="consent"> J’accepte
@@ -115,6 +112,7 @@ function select(element, key, value){
 }
 
 async function send(){
+
   if(!document.getElementById("consent").checked){
     alert("Tu dois accepter.");
     return;
@@ -129,13 +127,34 @@ async function send(){
 
   const response = await fetch(url,{
     method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
     body: JSON.stringify(data)
   });
 
   const r = await response.json();
 
-  document.getElementById("result").innerHTML =
-    `<div class="result">Score : ${r.score} - Profil : ${r.profil}</div>`;
+  let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
+
+  let content = `<div class="result">
+  <b>Score :</b> ${r.score}<br>
+  <b>Profil :</b> ${r.profil}
+  `;
+
+  if(r.profil === "PRETE"){
+    content += `
+    <br><br>
+    🔥 Tu es prête !<br>
+    <a href="${groupLink}" target="_blank" class="wa-btn">
+    🚀 Rejoindre le groupe WhatsApp
+    </a>
+    `;
+  } else {
+    content += `<br><br>Continue, on va t'aider 💪`;
+  }
+
+  content += `</div>`;
+
+  document.getElementById("result").innerHTML = content;
 }
 
 async function deleteData(){
