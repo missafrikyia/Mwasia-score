@@ -26,6 +26,8 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
   <h2>⚡ Questionnaire rapide</h2>
   <div class="card">
 
+    <!-- QUESTIONNAIRE (INCHANGÉ) -->
+
     <p>0. Quel est ton numéro WhatsApp ?</p>
     <input id="phone" type="tel" placeholder="+229...">
 
@@ -73,27 +75,31 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
     <button class="btn" onclick="select(this,'interet',true)">Oui</button>
     <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-    <!-- 🔒 CONSENTEMENT MIS À JOUR -->
+    <!-- CONSENTEMENT -->
     <div class="card">
       <p>📜 Conditions d’utilisation</p>
-
       <p style="font-weight:normal;">
-        Tes données (réponses, informations) peuvent être utilisées pour générer des analyses économiques <b>anonymisées et agrégées</b>, à l’aide de technologies automatisées (dont intelligence artificielle).  
+        Tes données peuvent être utilisées pour générer des analyses économiques <b>anonymisées et agrégées</b> via des technologies automatisées (dont IA).  
         <br><br>
-        💰 Une partie de la valeur générée par ces analyses peut être redistribuée sous forme de gains ou avantages (ex : royalties, opportunités économiques).  
+        💰 Une partie de la valeur peut être redistribuée (royalties, opportunités).  
         <br><br>
-        📊 Ces analyses peuvent également contribuer à établir un score et proposer des opportunités adaptées.  
+        📊 Un score peut être calculé pour proposer des opportunités adaptées.  
         <br><br>
         🔒 Tes données ne seront jamais vendues individuellement.
       </p>
-
       <label>
-        <input type="checkbox" id="consent"> J’accepte les conditions
+        <input type="checkbox" id="consent"> J’accepte
       </label>
     </div>
 
     <button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
+
     <div id="result"></div>
+
+    <!-- SUPPRESSION -->
+    <button class="btn" onclick="deleteData()" style="background:red;color:white;">
+      🗑️ Supprimer mes données
+    </button>
 
   </div>
 </div>
@@ -109,11 +115,8 @@ function select(element, key, value){
 }
 
 async function send(){
-  const btnSubmit = document.getElementById("submit-btn");
-
-  // 🔐 Vérification consentement
   if(!document.getElementById("consent").checked){
-    alert("Tu dois accepter les conditions pour continuer.");
+    alert("Tu dois accepter.");
     return;
   }
 
@@ -122,49 +125,45 @@ async function send(){
   data.depense = parseInt(document.getElementById("depense").value || 0);
   data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
 
-  const keysRequired = ['phone', 'situation', 'foyer', 'activite', 'blocage', 'capital', 'budget', 'interet'];
-  if(keysRequired.some(key => data[key] === undefined || data[key] === "")){
-    alert("Merci de répondre à toutes les questions.");
+  const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
+
+  const response = await fetch(url,{
+    method:"POST",
+    body: JSON.stringify(data)
+  });
+
+  const r = await response.json();
+
+  document.getElementById("result").innerHTML =
+    `<div class="result">Score : ${r.score} - Profil : ${r.profil}</div>`;
+}
+
+async function deleteData(){
+
+  let phone = document.getElementById("phone").value;
+
+  if(!phone){
+    alert("Entre ton numéro.");
     return;
   }
 
-  btnSubmit.innerText = "Analyse en cours...";
-  btnSubmit.disabled = true;
+  if(!confirm("Supprimer tes données ?")) return;
 
-  try {
-    const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
+  const url = "https://script.google.com/macros/s/AKfycbzBypsZKo08xsVdCLLjjKC29zjy1ijymj-rxb4bHl-Rl_AKVHqlN_hqSmbV5ybJdiV36Q/exec";
 
-    const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(data)
-    });
+  const response = await fetch(url,{
+    method:"POST",
+    body: JSON.stringify({
+      action:"delete",
+      phone:phone
+    })
+  });
 
-    const r = await response.json();
+  const r = await response.json();
 
-    let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
-
-    let content = `<div class="result"><b>Félicitations !</b><br>Score : ${r.score} - Profil : ${r.profil}<br>`;
-    
-    if(r.profil === "PRETE"){
-      content += `<br><b>Tu es prête !</b><br>Rejoins notre communauté pour commencer à générer des revenus dès maintenant.`;
-      content += `<br><a href="${groupLink}" class="wa-btn">🚀 OUI, JE VEUX GAGNER DE L'ARGENT MAINTENANT !</a>`;
-    } else {
-      content += `<br><span>Ton profil est en cours de validation. Nous reviendrons vers toi pour t'aider à te structurer 💪</span>`;
-    }
-    content += `</div>`;
-
-    document.getElementById("result").innerHTML = content;
-    btnSubmit.style.display = "none";
-
-  } catch(err) {
-    console.error(err);
-    alert("Erreur lors de l'analyse. Vérifie ta connexion.");
-    btnSubmit.disabled = false;
-    btnSubmit.innerText = "Réessayer";
-  }
+  alert(r.status === "deleted" ? "Supprimé" : "Non trouvé");
 }
 </script>
+
 </body>
 </html>
