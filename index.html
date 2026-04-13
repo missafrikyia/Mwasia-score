@@ -73,6 +73,23 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
     <button class="btn" onclick="select(this,'interet',true)">Oui</button>
     <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
+    <!-- 🔒 BLOC CONSENTEMENT -->
+    <div class="card">
+      <p>📜 Conditions d’utilisation</p>
+
+      <p style="font-weight:normal;">
+        Tes données (réponses, informations) peuvent être utilisées pour générer des analyses économiques <b>anonymisées et agrégées</b>, à l’aide de technologies automatisées (dont intelligence artificielle).  
+        <br><br>
+        💰 Ces analyses peuvent contribuer à établir un score et proposer des opportunités économiques.  
+        <br><br>
+        🔒 Tes données ne seront jamais vendues individuellement.
+      </p>
+
+      <label>
+        <input type="checkbox" id="consent"> J’accepte les conditions
+      </label>
+    </div>
+
     <button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
     <div id="result"></div>
 
@@ -91,7 +108,13 @@ function select(element, key, value){
 
 async function send(){
   const btnSubmit = document.getElementById("submit-btn");
-  
+
+  // 🔐 Vérification consentement
+  if(!document.getElementById("consent").checked){
+    alert("Tu dois accepter les conditions pour continuer.");
+    return;
+  }
+
   data.phone = document.getElementById("phone").value;
   data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
   data.depense = parseInt(document.getElementById("depense").value || 0);
@@ -117,8 +140,7 @@ async function send(){
     });
 
     const r = await response.json();
-    
-    // Ton lien de groupe WhatsApp
+
     let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
 
     let content = `<div class="result"><b>Félicitations !</b><br>Score : ${r.score} - Profil : ${r.profil}<br>`;
@@ -130,9 +152,9 @@ async function send(){
       content += `<br><span>Ton profil est en cours de validation. Nous reviendrons vers toi pour t'aider à te structurer 💪</span>`;
     }
     content += `</div>`;
-    
+
     document.getElementById("result").innerHTML = content;
-    btnSubmit.style.display = "none"; // Cache le bouton après analyse
+    btnSubmit.style.display = "none";
 
   } catch(err) {
     console.error(err);
