@@ -10,12 +10,12 @@ body { font-family: Arial, sans-serif; background:#f5f5f5; color: #333; }
 .container { max-width:400px; margin:auto; padding:20px; }
 .card { background:white; padding:15px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 p { font-weight:bold; margin-bottom: 5px; }
-.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor: pointer; transition: all 0.3s ease; }
-.btn.active { background:#1a4d2e; color:white; transform:scale(1.02); }
-input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-.submit { background:black; color:white; margin-top:15px; font-weight: bold; }
-.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; }
-.wa-btn { display:block; background:#25D366; color:white; padding:15px; text-align:center; border-radius:8px; text-decoration:none; margin-top:15px; font-size:18px; font-weight:bold; }
+.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor: pointer; }
+.btn.active { background:#1a4d2e; color:white; }
+input { width:100%; padding:10px; margin-top:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px; }
+.submit { background:black; color:white; }
+.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; }
+.wa-btn { display:block; background:#25D366; color:white; padding:15px; text-align:center; border-radius:8px; margin-top:15px; text-decoration:none; }
 </style>
 </head>
 
@@ -29,7 +29,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 <input id="phone" type="tel" placeholder="+229...">
 
 <p>1. Combien d’enfants as-tu ?</p>
-<input id="nb_enfants" type="number">
+<input id="nb_enfants" type="number" placeholder="0">
 
 <p>2. Quelle est ta situation ?</p>
 <button class="btn" onclick="select(this,'situation','celibataire')">Célibataire</button>
@@ -40,48 +40,53 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 <button class="btn" onclick="select(this,'foyer',true)">Oui</button>
 <button class="btn" onclick="select(this,'foyer',false)">Non</button>
 
-<p>4. Dépense marché / semaine</p>
+<p>4. Combien dépenses-tu par semaine pour le marché ? (FCFA)</p>
 <input id="depense" type="number">
 
-<p>5. Fréquence marché</p>
-<input id="frequence_marche" type="number">
+<p>5. Combien de fois vas-tu au marché par semaine ?</p>
+<input id="frequence_marche" type="number" min="0" max="7">
 
-<p>6. Activité génératrice ?</p>
+<p>6. As-tu déjà une activité qui te rapporte de l’argent ?</p>
 <button class="btn" onclick="select(this,'activite',true)">Oui</button>
 <button class="btn" onclick="select(this,'activite',false)">Non</button>
 
-<p>7. Blocage</p>
-<button class="btn" onclick="select(this,'blocage','argent')">Argent</button>
-<button class="btn" onclick="select(this,'blocage','temps')">Temps</button>
-<button class="btn" onclick="select(this,'blocage','idee')">Idée</button>
-<button class="btn" onclick="select(this,'blocage','peur')">Peur</button>
+<p>7. Qu’est-ce qui te bloque aujourd’hui ?</p>
+<button class="btn" onclick="select(this,'blocage','argent')">Manque d’argent</button>
+<button class="btn" onclick="select(this,'blocage','temps')">Manque de temps</button>
+<button class="btn" onclick="select(this,'blocage','idee')">Manque d’idée</button>
+<button class="btn" onclick="select(this,'blocage','peur')">Peur d’échouer</button>
+<button class="btn" onclick="select(this,'blocage','autre')">Autre</button>
 
-<p>8. Capital</p>
+<p>8. Si tu avais un petit capital, commencerais-tu ?</p>
 <button class="btn" onclick="select(this,'capital',true)">Oui</button>
 <button class="btn" onclick="select(this,'capital',false)">Non</button>
 
-<p>9. Budget</p>
-<button class="btn" onclick="select(this,'budget','5-20')">5k-20k</button>
-<button class="btn" onclick="select(this,'budget','20-50')">20k-50k</button>
-<button class="btn" onclick="select(this,'budget','50-100')">50k-100k</button>
-<button class="btn" onclick="select(this,'budget','100+')">100k+</button>
+<p>9. De combien as-tu besoin ?</p>
+<button class="btn" onclick="select(this,'budget','5-20')">5 000 à 20 000 FCFA</button>
+<button class="btn" onclick="select(this,'budget','20-50')">20 000 à 50 000 FCFA</button>
+<button class="btn" onclick="select(this,'budget','50-100')">50 000 à 100 000 FCFA</button>
+<button class="btn" onclick="select(this,'budget','100+')">Plus de 100 000 FCFA</button>
+<button class="btn" onclick="select(this,'budget','unknown')">Je ne sais pas</button>
 
-<p>10. Intéressée à gagner de l’argent ?</p>
+<p>10. Serais-tu intéressée pour gagner de l’argent avec ce que tu fais déjà ?</p>
 <button class="btn" onclick="select(this,'interet',true)">Oui</button>
 <button class="btn" onclick="select(this,'interet',false)">Non</button>
 
 <div class="card">
 <p>📜 Conditions</p>
+<p style="font-weight:normal;">
+Tes données peuvent être utilisées pour générer des analyses économiques anonymisées via IA.
+</p>
 <label>
 <input type="checkbox" id="consent"> J’accepte
 </label>
 </div>
 
-<button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
+<button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
 
 <div id="result"></div>
 
-<button class="btn" onclick="deleteData()" style="background:red;color:white;">
+<button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:20px;">
 🗑️ Supprimer mes données
 </button>
 
@@ -93,20 +98,18 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 let data = {};
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
-// 🔥 sélection propre
-function select(el, key, value){
-  let buttons = el.parentNode.querySelectorAll(".btn");
-  buttons.forEach(btn => btn.classList.remove("active"));
+function select(el,key,value){
+  let btns = el.parentNode.querySelectorAll(".btn");
+  btns.forEach(b=>b.classList.remove("active"));
   el.classList.add("active");
 
-  if(key === "interet"){
-    data[key] = (value === true);
+  if(key==="interet"){
+    data[key]=(value===true);
   } else {
-    data[key] = value;
+    data[key]=value;
   }
 }
 
-// 🔥 envoi sécurisé
 async function send(){
 
   if(!document.getElementById("consent").checked){
@@ -114,68 +117,49 @@ async function send(){
     return;
   }
 
-  const required = ["situation","foyer","activite","blocage","capital","budget","interet"];
+  const required=["situation","foyer","activite","blocage","capital","budget","interet"];
   for(let k of required){
-    if(data[k] === undefined){
+    if(data[k]===undefined){
       alert("Réponds à toutes les questions");
       return;
     }
   }
 
-  data.phone = document.getElementById("phone").value;
-  data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
-  data.depense = parseInt(document.getElementById("depense").value || 0);
-  data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
-  data.consent = true;
+  data.phone=document.getElementById("phone").value;
+  data.nb_enfants=parseInt(document.getElementById("nb_enfants").value||0);
+  data.depense=parseInt(document.getElementById("depense").value||0);
+  data.frequence_marche=parseInt(document.getElementById("frequence_marche").value||0);
+  data.consent=true;
 
-  const btn = document.getElementById("submit-btn");
-  btn.innerText = "Analyse...";
-  btn.disabled = true;
+  const res=await fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify(data)
+  });
 
-  try{
-    const res = await fetch(SCRIPT_URL,{
-      method:"POST",
-      headers:{"Content-Type":"text/plain"},
-      body:JSON.stringify(data)
-    });
+  const r=await res.json();
 
-    const r = await res.json();
+  let html=`<div class="result">
+  Score: ${r.score}<br>
+  Profil: ${r.profil}
+  `;
 
-    let html = `<div class="result">
-    Score: ${r.score}<br>
-    Profil: ${r.profil}
-    `;
-
-    if(r.profil === "PRETE"){
-      html += `<br><a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="wa-btn">Rejoindre WhatsApp</a>`;
-    }
-
-    html += `</div>`;
-
-    document.getElementById("result").innerHTML = html;
-
-  }catch(e){
-    alert("Erreur serveur");
+  if(r.profil==="PRETE"){
+    html+=`<br><a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="wa-btn">Rejoindre WhatsApp</a>`;
   }
 
-  btn.innerText = "Analyser";
-  btn.disabled = false;
+  html+=`</div>`;
+  document.getElementById("result").innerHTML=html;
 }
 
-// 🔥 suppression RGPD
 async function deleteData(){
-
-  let phone = document.getElementById("phone").value;
-
-  if(!phone){
-    alert("Entre ton numéro");
-    return;
-  }
+  let phone=document.getElementById("phone").value;
+  if(!phone){alert("Entre ton numéro");return;}
 
   await fetch(SCRIPT_URL,{
     method:"POST",
     headers:{"Content-Type":"text/plain"},
-    body:JSON.stringify({action:"delete", phone})
+    body:JSON.stringify({action:"delete",phone})
   });
 
   alert("Données supprimées");
