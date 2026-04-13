@@ -14,7 +14,7 @@ p { font-weight:bold; margin-bottom: 5px; }
 .btn.active { background:#1a4d2e; color:white; transform:scale(1.02); }
 input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 .submit { background:black; color:white; margin-top:15px; font-weight: bold; }
-.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; line-height: 1.5; }
+.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; }
 .wa-btn { display:block; background:#25D366; color:white; padding:15px; text-align:center; border-radius:8px; text-decoration:none; margin-top:15px; font-size:18px; font-weight:bold; }
 </style>
 </head>
@@ -22,177 +22,165 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1
 <body>
 
 <div class="container">
-  <h2>⚡ Questionnaire rapide</h2>
-  <div class="card">
+<h2>⚡ Questionnaire rapide</h2>
+<div class="card">
 
-    <p>0. Quel est ton numéro WhatsApp ?</p>
-    <input id="phone" type="tel" placeholder="+229...">
+<p>0. Quel est ton numéro WhatsApp ?</p>
+<input id="phone" type="tel" placeholder="+229...">
 
-    <p>1. Combien d’enfants as-tu ?</p>
-    <input id="nb_enfants" type="number" placeholder="0">
+<p>1. Combien d’enfants as-tu ?</p>
+<input id="nb_enfants" type="number">
 
-    <p>2. Quelle est ta situation ?</p>
-    <button class="btn" onclick="select(this,'situation','celibataire')">Célibataire</button>
-    <button class="btn" onclick="select(this,'situation','couple')">En couple</button>
-    <button class="btn" onclick="select(this,'situation','mariee')">Mariée</button>
+<p>2. Quelle est ta situation ?</p>
+<button class="btn" onclick="select(this,'situation','celibataire')">Célibataire</button>
+<button class="btn" onclick="select(this,'situation','couple')">En couple</button>
+<button class="btn" onclick="select(this,'situation','mariee')">Mariée</button>
 
-    <p>3. T’occupes-tu du foyer ?</p>
-    <button class="btn" onclick="select(this,'foyer',true)">Oui</button>
-    <button class="btn" onclick="select(this,'foyer',false)">Non</button>
+<p>3. T’occupes-tu du foyer ?</p>
+<button class="btn" onclick="select(this,'foyer',true)">Oui</button>
+<button class="btn" onclick="select(this,'foyer',false)">Non</button>
 
-    <p>4. Combien dépenses-tu par semaine pour le marché ? (FCFA)</p>
-    <input id="depense" type="number">
+<p>4. Dépense marché / semaine</p>
+<input id="depense" type="number">
 
-    <p>5. Combien de fois vas-tu au marché par semaine ?</p>
-    <input id="frequence_marche" type="number" min="0" max="7">
+<p>5. Fréquence marché</p>
+<input id="frequence_marche" type="number">
 
-    <p>6. As-tu déjà une activité qui te rapporte de l’argent ?</p>
-    <button class="btn" onclick="select(this,'activite',true)">Oui</button>
-    <button class="btn" onclick="select(this,'activite',false)">Non</button>
+<p>6. Activité génératrice ?</p>
+<button class="btn" onclick="select(this,'activite',true)">Oui</button>
+<button class="btn" onclick="select(this,'activite',false)">Non</button>
 
-    <p>7. Qu’est-ce qui te bloque aujourd’hui ?</p>
-    <button class="btn" onclick="select(this,'blocage','argent')">Manque d’argent</button>
-    <button class="btn" onclick="select(this,'blocage','temps')">Manque de temps</button>
-    <button class="btn" onclick="select(this,'blocage','idee')">Manque d’idée</button>
-    <button class="btn" onclick="select(this,'blocage','peur')">Peur d’échouer</button>
-    <button class="btn" onclick="select(this,'blocage','autre')">Autre</button>
+<p>7. Blocage</p>
+<button class="btn" onclick="select(this,'blocage','argent')">Argent</button>
+<button class="btn" onclick="select(this,'blocage','temps')">Temps</button>
+<button class="btn" onclick="select(this,'blocage','idee')">Idée</button>
+<button class="btn" onclick="select(this,'blocage','peur')">Peur</button>
 
-    <p>8. Si tu avais un petit capital, commencerais-tu ?</p>
-    <button class="btn" onclick="select(this,'capital',true)">Oui</button>
-    <button class="btn" onclick="select(this,'capital',false)">Non</button>
+<p>8. Capital</p>
+<button class="btn" onclick="select(this,'capital',true)">Oui</button>
+<button class="btn" onclick="select(this,'capital',false)">Non</button>
 
-    <p>9. De combien as-tu besoin ?</p>
-    <button class="btn" onclick="select(this,'budget','5-20')">5 000 à 20 000 FCFA</button>
-    <button class="btn" onclick="select(this,'budget','20-50')">20 000 à 50 000 FCFA</button>
-    <button class="btn" onclick="select(this,'budget','50-100')">50 000 à 100 000 FCFA</button>
-    <button class="btn" onclick="select(this,'budget','100+')">Plus de 100 000 FCFA</button>
-    <button class="btn" onclick="select(this,'budget','unknown')">Je ne sais pas</button>
+<p>9. Budget</p>
+<button class="btn" onclick="select(this,'budget','5-20')">5k-20k</button>
+<button class="btn" onclick="select(this,'budget','20-50')">20k-50k</button>
+<button class="btn" onclick="select(this,'budget','50-100')">50k-100k</button>
+<button class="btn" onclick="select(this,'budget','100+')">100k+</button>
 
-    <p>10. Serais-tu intéressée pour gagner de l’argent avec ce que tu fais déjà ?</p>
-    <button class="btn" onclick="select(this,'interet',true)">Oui</button>
-    <button class="btn" onclick="select(this,'interet',false)">Non</button>
+<p>10. Intéressée à gagner de l’argent ?</p>
+<button class="btn" onclick="select(this,'interet',true)">Oui</button>
+<button class="btn" onclick="select(this,'interet',false)">Non</button>
 
-    <div class="card">
-      <p>📜 Conditions</p>
-      <p style="font-weight:normal;">
-        Tes données peuvent être utilisées pour générer des analyses économiques <b>anonymisées</b> via des technologies automatisées (IA).  
-        <br><br>
-        💰 Une partie de la valeur peut être redistribuée (royalties).  
-        <br><br>
-        📊 Un score peut être calculé pour proposer des opportunités.  
-      </p>
-      <label>
-        <input type="checkbox" id="consent"> J’accepte
-      </label>
-    </div>
+<div class="card">
+<p>📜 Conditions</p>
+<label>
+<input type="checkbox" id="consent"> J’accepte
+</label>
+</div>
 
-    <button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
+<button id="submit-btn" class="btn submit" onclick="send()">Analyser</button>
 
-    <div id="result"></div>
+<div id="result"></div>
 
-    <button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:30px;">
-      🗑️ Supprimer mes données
-    </button>
+<button class="btn" onclick="deleteData()" style="background:red;color:white;">
+🗑️ Supprimer mes données
+</button>
 
-  </div>
+</div>
 </div>
 
 <script>
+
 let data = {};
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
-function select(element, key, value){
-  let buttons = element.parentNode.querySelectorAll(".btn");
+// 🔥 sélection propre
+function select(el, key, value){
+  let buttons = el.parentNode.querySelectorAll(".btn");
   buttons.forEach(btn => btn.classList.remove("active"));
-  element.classList.add("active");
-  data[key] = value;
+  el.classList.add("active");
+
+  if(key === "interet"){
+    data[key] = (value === true);
+  } else {
+    data[key] = value;
+  }
 }
 
+// 🔥 envoi sécurisé
 async function send(){
-  const consentCheckbox = document.getElementById("consent");
-  if(!consentCheckbox.checked){
-    alert("Tu dois accepter les conditions.");
+
+  if(!document.getElementById("consent").checked){
+    alert("Tu dois accepter");
     return;
   }
 
-  const btn = document.getElementById("submit-btn");
-  btn.innerText = "Analyse en cours...";
-  btn.disabled = true;
+  const required = ["situation","foyer","activite","blocage","capital","budget","interet"];
+  for(let k of required){
+    if(data[k] === undefined){
+      alert("Réponds à toutes les questions");
+      return;
+    }
+  }
 
-  // Capture des champs texte/nombre
   data.phone = document.getElementById("phone").value;
   data.nb_enfants = parseInt(document.getElementById("nb_enfants").value || 0);
   data.depense = parseInt(document.getElementById("depense").value || 0);
   data.frequence_marche = parseInt(document.getElementById("frequence_marche").value || 0);
-  data.consent = consentCheckbox.checked;
+  data.consent = true;
 
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(data)
+  const btn = document.getElementById("submit-btn");
+  btn.innerText = "Analyse...";
+  btn.disabled = true;
+
+  try{
+    const res = await fetch(SCRIPT_URL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify(data)
     });
 
-    const r = await response.json();
-    let groupLink = "https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t";
+    const r = await res.json();
 
-    // Gestion de l'affichage pour éviter le "undefined"
-    let scoreFinal = r.score !== undefined ? r.score : "Analyse finie";
-    let profilFinal = r.profil !== undefined ? r.profil : "Traitement...";
-
-    let content = `<div class="result">
-    <b>Score :</b> ${scoreFinal}<br>
-    <b>Profil :</b> ${profilFinal}
+    let html = `<div class="result">
+    Score: ${r.score}<br>
+    Profil: ${r.profil}
     `;
 
     if(r.profil === "PRETE"){
-      content += `
-      <br><br>
-      🔥 Tu es prête !<br>
-      <a href="${groupLink}" target="_blank" class="wa-btn">
-      🚀 Rejoindre le groupe WhatsApp
-      </a>
-      `;
-    } else {
-      content += `<br><br>Continue, on va t'aider 💪`;
+      html += `<br><a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="wa-btn">Rejoindre WhatsApp</a>`;
     }
 
-    content += `</div>`;
-    document.getElementById("result").innerHTML = content;
+    html += `</div>`;
 
-  } catch (error) {
-    alert("Erreur de connexion. Vérifie que le script Google est bien déployé sur 'Tout le monde'.");
-  } finally {
-    btn.innerText = "Analyser mon profil";
-    btn.disabled = false;
+    document.getElementById("result").innerHTML = html;
+
+  }catch(e){
+    alert("Erreur serveur");
   }
+
+  btn.innerText = "Analyser";
+  btn.disabled = false;
 }
 
+// 🔥 suppression RGPD
 async function deleteData(){
+
   let phone = document.getElementById("phone").value;
+
   if(!phone){
-    alert("Entre ton numéro pour supprimer.");
+    alert("Entre ton numéro");
     return;
   }
 
-  if(!confirm("Supprimer définitivement tes données ?")) return;
+  await fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify({action:"delete", phone})
+  });
 
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: "delete",
-        phone: phone
-      })
-    });
-
-    const r = await response.json();
-    alert(r.status === "deleted" ? "Supprimé avec succès" : "Numéro non trouvé");
-  } catch (e) {
-    alert("Erreur lors de la suppression.");
-  }
+  alert("Données supprimées");
 }
+
 </script>
 
 </body>
