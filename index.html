@@ -10,7 +10,7 @@ body { font-family: Arial, sans-serif; background:#f5f5f5; color: #333; }
 .container { max-width:400px; margin:auto; padding:20px; }
 .card { background:white; padding:15px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 p { font-weight:bold; margin-bottom: 5px; }
-.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor: pointer; }
+.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor:pointer; }
 .btn.active { background:#1a4d2e; color:white; }
 input { width:100%; padding:10px; margin-top:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px; }
 .submit { background:black; color:white; }
@@ -50,7 +50,7 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom:10px; border:1px
 <button class="btn" onclick="select(this,'activite',true)">Oui</button>
 <button class="btn" onclick="select(this,'activite',false)">Non</button>
 
-<p>7. Qu’est-ce qui te bloque aujourd’hui ?</p>
+<p>7. Qu’est-ce qui te bloque aujourd’hui pour commencer une activité ?</p>
 <button class="btn" onclick="select(this,'blocage','argent')">Manque d’argent</button>
 <button class="btn" onclick="select(this,'blocage','temps')">Manque de temps</button>
 <button class="btn" onclick="select(this,'blocage','idee')">Manque d’idée</button>
@@ -75,7 +75,11 @@ input { width:100%; padding:10px; margin-top:8px; margin-bottom:10px; border:1px
 <div class="card">
 <p>📜 Conditions</p>
 <p style="font-weight:normal;">
-Tes données peuvent être utilisées pour générer des analyses économiques anonymisées via IA.
+Tes données peuvent être utilisées pour générer des analyses économiques <b>anonymisées</b> via des technologies automatisées (IA).
+<br><br>
+💰 Une partie de la valeur peut être redistribuée (royalties).
+<br><br>
+📊 Un score peut être calculé pour proposer des opportunités.
 </p>
 <label>
 <input type="checkbox" id="consent"> J’accepte
@@ -86,7 +90,7 @@ Tes données peuvent être utilisées pour générer des analyses économiques a
 
 <div id="result"></div>
 
-<button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:20px;">
+<button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:30px;">
 🗑️ Supprimer mes données
 </button>
 
@@ -98,10 +102,11 @@ Tes données peuvent être utilisées pour générer des analyses économiques a
 let data = {};
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
-function select(el,key,value){
-  let btns = el.parentNode.querySelectorAll(".btn");
-  btns.forEach(b=>b.classList.remove("active"));
-  el.classList.add("active");
+// 🔥 sélection corrigée
+function select(element,key,value){
+  let buttons = element.parentNode.querySelectorAll(".btn");
+  buttons.forEach(btn => btn.classList.remove("active"));
+  element.classList.add("active");
 
   if(key==="interet"){
     data[key]=(value===true);
@@ -110,17 +115,18 @@ function select(el,key,value){
   }
 }
 
+// 🔥 envoi corrigé
 async function send(){
 
   if(!document.getElementById("consent").checked){
-    alert("Tu dois accepter");
+    alert("Tu dois accepter les conditions.");
     return;
   }
 
   const required=["situation","foyer","activite","blocage","capital","budget","interet"];
   for(let k of required){
     if(data[k]===undefined){
-      alert("Réponds à toutes les questions");
+      alert("Merci de répondre à toutes les questions.");
       return;
     }
   }
@@ -131,30 +137,39 @@ async function send(){
   data.frequence_marche=parseInt(document.getElementById("frequence_marche").value||0);
   data.consent=true;
 
-  const res=await fetch(SCRIPT_URL,{
+  const response=await fetch(SCRIPT_URL,{
     method:"POST",
     headers:{"Content-Type":"text/plain"},
     body:JSON.stringify(data)
   });
 
-  const r=await res.json();
+  const r=await response.json();
 
-  let html=`<div class="result">
-  Score: ${r.score}<br>
-  Profil: ${r.profil}
+  let content=`<div class="result">
+  <b>Score :</b> ${r.score}<br>
+  <b>Profil :</b> ${r.profil}
   `;
 
   if(r.profil==="PRETE"){
-    html+=`<br><a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="wa-btn">Rejoindre WhatsApp</a>`;
+    content+=`<br><a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="wa-btn">🚀 Rejoindre le groupe WhatsApp</a>`;
   }
 
-  html+=`</div>`;
-  document.getElementById("result").innerHTML=html;
+  content+=`</div>`;
+
+  document.getElementById("result").innerHTML=content;
 }
 
+// 🔥 suppression
 async function deleteData(){
+
   let phone=document.getElementById("phone").value;
-  if(!phone){alert("Entre ton numéro");return;}
+
+  if(!phone){
+    alert("Entre ton numéro pour supprimer.");
+    return;
+  }
+
+  if(!confirm("Supprimer définitivement tes données ?")) return;
 
   await fetch(SCRIPT_URL,{
     method:"POST",
