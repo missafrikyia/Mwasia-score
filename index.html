@@ -10,31 +10,26 @@
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { color: #1a4d2e; text-align: center; margin-top: 5px; }
         
-        /* Avertissement Doublon */
         .alert-doublon { 
-            background: #fff3f3; 
-            color: #b71c1c; 
-            padding: 12px; 
-            border-radius: 8px; 
-            font-size: 13px; 
-            border: 1px solid #ffcdd2; 
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
+            background: #fff3f3; color: #b71c1c; padding: 12px; border-radius: 8px; 
+            font-size: 13px; border: 1px solid #ffcdd2; margin-bottom: 20px;
+            text-align: center; font-weight: bold;
         }
 
         p { font-weight: bold; margin-top: 15px; font-size: 14px; color: #1a4d2e; }
-        .btn { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; transition: 0.2s; }
+        .btn { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; }
         .btn.active { background: #1a4d2e; color: white; border-color: #1a4d2e; font-weight: bold; }
         input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         
         .submit { background: black; color: white; font-weight: bold; text-align: center; border: none; margin-top: 25px; cursor: pointer; width: 100%; padding: 15px; border-radius: 8px; font-size: 16px; }
-        .submit:disabled { background: #666; cursor: not-allowed; }
         
-        .result { background: #e8f5e9; padding: 15px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #1a4d2e; font-weight: bold; }
-        .delete-btn { background: none; color: #d32f2f; border: 1px solid #d32f2f; margin-top: 30px; font-size: 12px; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .result { background: #e8f5e9; padding: 15px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #1a4d2e; }
+        .whatsapp-btn { 
+            display: block; background: #25D366; color: white; text-decoration: none; 
+            text-align: center; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 15px;
+        }
         
-        .consent-box { margin-top: 15px; font-size: 12px; display: flex; align-items: center; gap: 8px; color: #666; }
+        .delete-btn { background: none; color: #d32f2f; border: 1px solid #d32f2f; margin-top: 30px; font-size: 11px; width: 100%; padding: 8px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -42,7 +37,7 @@
 <div class="container">
     <div class="card">
         <div class="alert-doublon">
-            ⚠️ ATTENTION : Une seule participation autorisée par personne. Tout doublon détecté invalidera votre profil.
+            ⚠️ ATTENTION : Une seule participation autorisée par personne.
         </div>
 
         <h2>⚡ Mwa$ia</h2>
@@ -62,7 +57,7 @@
         <button class="btn" onclick="select(this,'marche',true)">Oui</button>
         <button class="btn" onclick="select(this,'marche',false)">Non</button>
 
-        <p>4. Combien de fois par semaine y vas-tu ?</p>
+        <p>4. Combien de fois par semaine ?</p>
         <input id="freq" type="number" placeholder="Ex: 2">
 
         <p>5. Dépense moyenne au marché par semaine ?</p>
@@ -94,7 +89,7 @@
         <button class="btn" onclick="select(this,'impact',true)">Oui, c'est grave</button>
         <button class="btn" onclick="select(this,'impact',false)">Non</button>
 
-        <div class="consent-box">
+        <div style="margin-top:15px; font-size:12px; display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" id="consent" style="width: auto;"> 
             <label for="consent">J'accepte que Mwa$ia analyse mes données.</label>
         </div>
@@ -103,18 +98,14 @@
         
         <div id="result-area"></div>
 
-        <button onclick="deleteData()" class="delete-btn">🗑️ Supprimer mes données</button>
+        <button onclick="deleteData()" class="delete-btn">🗑️ Supprimer mes données en interne</button>
     </div>
 </div>
 
 <script>
-let data = { 
-    enfants: null, decision: "", marche: null, 
-    depense: "", revenu: "", interet: null, 
-    capital: "", blocage: "", impact: null 
-};
+let data = { enfants:null, decision: "", marche: null, depense: "", revenu: "", interet: null, capital: "", blocage: "", impact: null };
 
-// Ta clé API Google Apps Script
+// Ton URL Google Apps Script (AKfy...)
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
 function select(el, key, val) {
@@ -125,43 +116,40 @@ function select(el, key, val) {
 
 async function send() {
     const btn = document.getElementById("submit-btn");
-    const consent = document.getElementById("consent").checked;
+    const resDiv = document.getElementById("result-area");
     const phone = document.getElementById("phone").value;
+    const consent = document.getElementById("consent").checked;
     const freq = document.getElementById("freq").value;
 
-    if (!phone || !consent || freq === "") {
-        return alert("Numéro, fréquence et consentement requis pour continuer.");
-    }
+    if (!phone || !consent || freq === "") return alert("Numéro, fréquence et consentement requis.");
 
-    btn.innerText = "⏳ Analyse en cours...";
+    btn.innerText = "⏳ Analyse...";
     btn.disabled = true;
-    
     data.phone = phone;
     data.freq = freq;
 
     try {
-        const response = await fetch(SCRIPT_URL, { 
-            method: "POST", 
-            body: JSON.stringify(data) 
-        });
+        const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(data) });
         const r = await response.json();
         
-        if (r.result === "error" && r.error === "DOUBLON_DETECTE") {
-            alert("⚠️ Erreur : Ce numéro a déjà été utilisé pour ce questionnaire.");
-        } else if (r.result === "success") {
-            document.getElementById("result-area").innerHTML = `
-                <div class="result">
-                    ✅ Analyse terminée !<br>
-                    Score : ${r.score} / 100<br>
-                    Profil : ${r.profil}
-                </div>`;
-            document.getElementById("result-area").scrollIntoView({ behavior: 'smooth' });
+        if (r.result === "error") {
+            alert("⚠️ " + (r.error === "DOUBLON_DETECTE" ? "Numéro déjà utilisé." : r.error));
         } else {
-            alert("Une erreur technique est survenue.");
+            let actionHtml = "";
+            if (r.profil === "PRETE") {
+                actionHtml = `
+                    <p style="color:#1a4d2e;">🌟 Félicitations ! Vous êtes éligible.</p>
+                    <a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="whatsapp-btn" target="_blank">
+                        REJOINDRE LE GROUPE WHATSAPP
+                    </a>`;
+            } else {
+                actionHtml = `<p>Merci ! Nous vous recontacterons si besoin.</p>`;
+            }
+
+            resDiv.innerHTML = `<div class="result">Score: ${r.score}/100 - Profil: <strong>${r.profil}</strong>${actionHtml}</div>`;
+            resDiv.scrollIntoView({ behavior: 'smooth' });
         }
-    } catch (e) { 
-        alert("Erreur de connexion. Vérifiez votre accès internet."); 
-    }
+    } catch (e) { alert("Erreur de connexion."); }
     
     btn.innerText = "ANALYSER MON PROFIL";
     btn.disabled = false;
@@ -169,19 +157,11 @@ async function send() {
 
 async function deleteData() {
     const phone = document.getElementById("phone").value;
-    if (!phone) return alert("Entrez votre numéro pour identifier les données à supprimer.");
-    
-    if (confirm("Confirmez-vous la suppression de vos données personnelles en interne ?")) {
-        try {
-            await fetch(SCRIPT_URL, { 
-                method: "POST", 
-                body: JSON.stringify({ action: "delete", phone: phone }) 
-            });
-            alert("Demande de suppression prise en compte.");
-            location.reload();
-        } catch (e) {
-            alert("Erreur lors de la suppression.");
-        }
+    if (!phone) return alert("Entrez votre numéro.");
+    if (confirm("Supprimer vos données personnelles en interne ?")) {
+        await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "delete", phone: phone }) });
+        alert("Demande enregistrée.");
+        location.reload();
     }
 }
 </script>
