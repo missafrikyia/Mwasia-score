@@ -1,198 +1,189 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Questionnaire Mwa$ia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire Mwa$ia</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background:#f4f7f6; color: #333; padding: 10px; }
+        .container { max-width: 450px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #1a4d2e; text-align: center; margin-top: 5px; }
+        
+        /* Avertissement Doublon */
+        .alert-doublon { 
+            background: #fff3f3; 
+            color: #b71c1c; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            border: 1px solid #ffcdd2; 
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-<style>
-body { font-family: Arial, sans-serif; background:#f5f5f5; color: #333; }
-.container { max-width:400px; margin:auto; padding:20px; }
-.card { background:white; padding:15px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-p { font-weight:bold; margin-bottom: 5px; }
-.btn { width:100%; padding:12px; margin-top:8px; border:none; border-radius:8px; font-size:16px; background:#ddd; cursor: pointer; transition: all 0.3s ease; }
-.btn.active { background:#1a4d2e; color:white; transform:scale(1.02); }
-input { width:100%; padding:10px; margin-top:8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-.submit { background:black; color:white; margin-top:15px; font-weight: bold; }
-.submit:disabled { background:#666; cursor: not-allowed; }
-.result { background:#e8f5e9; padding:15px; margin-top:20px; border-radius:10px; border: 1px solid #c8e6c9; line-height: 1.5; }
-.wa-btn { display:block; background:#25D366; color:white; padding:15px; text-align:center; border-radius:8px; text-decoration:none; margin-top:15px; font-size:18px; font-weight:bold; }
-</style>
+        p { font-weight: bold; margin-top: 15px; font-size: 14px; color: #1a4d2e; }
+        .btn { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; transition: 0.2s; }
+        .btn.active { background: #1a4d2e; color: white; border-color: #1a4d2e; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        
+        .submit { background: black; color: white; font-weight: bold; text-align: center; border: none; margin-top: 25px; cursor: pointer; width: 100%; padding: 15px; border-radius: 8px; font-size: 16px; }
+        .submit:disabled { background: #666; cursor: not-allowed; }
+        
+        .result { background: #e8f5e9; padding: 15px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #1a4d2e; font-weight: bold; }
+        .delete-btn { background: none; color: #d32f2f; border: 1px solid #d32f2f; margin-top: 30px; font-size: 12px; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; }
+        
+        .consent-box { margin-top: 15px; font-size: 12px; display: flex; align-items: center; gap: 8px; color: #666; }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h2>⚡ Questionnaire Mwa$ia</h2>
-
-  <p style="font-size:14px; color:#c62828;">
-  ⚠️ Merci de répondre honnêtement et une seule fois. Tout doublon ou fausse information entraîne une non-sélection.
-  </p>
-
-  <div class="card">
-
-    <p>1. Quel est ton numéro WhatsApp ?</p>
-    <input id="phone" type="tel" placeholder="+229...">
-
-    <p>2. As-tu des enfants ?</p>
-    <button class="btn" onclick="select(this,'enfants',true)">Oui</button>
-    <button class="btn" onclick="select(this,'enfants',false)">Non</button>
-
-    <p>3. Qui décide des courses dans ton foyer ?</p>
-    <button class="btn" onclick="select(this,'decision_courses','moi')">Moi</button>
-    <button class="btn" onclick="select(this,'decision_courses','autre')">Quelqu’un d’autre</button>
-
-    <p>4. Est-ce que tu vas toi-même au marché ?</p>
-    <button class="btn" onclick="select(this,'marche',true)">Oui</button>
-    <button class="btn" onclick="select(this,'marche',false)">Non</button>
-
-    <p>5. Combien de fois par semaine vas-tu au marché ?</p>
-    <button class="btn" onclick="select(this,'frequence','1')">1 fois</button>
-    <button class="btn" onclick="select(this,'frequence','2')">2 fois</button>
-    <button class="btn" onclick="select(this,'frequence','3+')">3 fois ou plus</button>
-
-    <p>6. Combien dépenses-tu en moyenne PAR SEMAINE pour le marché ?</p>
-    <button class="btn" onclick="select(this,'depense','<5000')">Moins de 5000 FCFA</button>
-    <button class="btn" onclick="select(this,'depense','5-10')">5000 – 10000 FCFA</button>
-    <button class="btn" onclick="select(this,'depense','10-15')">10000 – 15000 FCFA</button>
-    <button class="btn" onclick="select(this,'depense','15+')">Plus de 15000 FCFA</button>
-
-    <p>7. As-tu une activité qui te rapporte de l’argent chaque semaine ?</p>
-    <button class="btn" onclick="select(this,'revenu',true)">Oui</button>
-    <button class="btn" onclick="select(this,'revenu',false)">Non</button>
-
-    <p>8. Souhaites-tu lancer une activité pour gagner de l’argent ?</p>
-    <button class="btn" onclick="select(this,'interet',true)">Oui</button>
-    <button class="btn" onclick="select(this,'interet',false)">Non</button>
-
-    <p>9. Quel est ton principal blocage aujourd’hui ?</p>
-    <button class="btn" onclick="select(this,'blocage','argent')">Manque d’argent</button>
-    <button class="btn" onclick="select(this,'blocage','temps')">Manque de temps</button>
-    <button class="btn" onclick="select(this,'blocage','idee')">Manque d’idée</button>
-    <button class="btn" onclick="select(this,'blocage','peur')">Peur d’échouer</button>
-    <button class="btn" onclick="select(this,'blocage','autre')">Autre</button>
-
-    <p>10. Si tu perds 2000 FCFA, est-ce grave pour ton foyer ?</p>
-    <button class="btn" onclick="select(this,'impact',true)">Oui</button>
-    <button class="btn" onclick="select(this,'impact',false)">Non</button>
-
     <div class="card">
-      <p>📜 Conditions</p>
-      <p style="font-weight:normal; font-size:14px;">
-        Tes données seront traitées par l'IA Mwa$ia pour analyser ton profil économique. En validant, tu acceptes notre politique de confidentialité.
-      </p>
-      <label>
-        <input type="checkbox" id="consent"> J’accepte
-      </label>
+        <div class="alert-doublon">
+            ⚠️ ATTENTION : Une seule participation autorisée par personne. Tout doublon détecté invalidera votre profil.
+        </div>
+
+        <h2>⚡ Mwa$ia</h2>
+        
+        <p>0. Ton numéro WhatsApp</p>
+        <input id="phone" type="tel" placeholder="+229XXXXXXXX">
+
+        <p>1. As-tu des enfants ?</p>
+        <button class="btn" onclick="select(this,'enfants',true)">Oui</button>
+        <button class="btn" onclick="select(this,'enfants',false)">Non</button>
+
+        <p>2. Qui décide des courses chez toi ?</p>
+        <button class="btn" onclick="select(this,'decision','moi')">Moi</button>
+        <button class="btn" onclick="select(this,'decision','autre')">Quelqu'un d'autre</button>
+
+        <p>3. Vas-tu au marché toi-même ?</p>
+        <button class="btn" onclick="select(this,'marche',true)">Oui</button>
+        <button class="btn" onclick="select(this,'marche',false)">Non</button>
+
+        <p>4. Combien de fois par semaine y vas-tu ?</p>
+        <input id="freq" type="number" placeholder="Ex: 2">
+
+        <p>5. Dépense moyenne au marché par semaine ?</p>
+        <button class="btn" onclick="select(this,'depense','<5000')">Moins de 5 000 FCFA</button>
+        <button class="btn" onclick="select(this,'depense','5-10')">5 000 à 10 000 FCFA</button>
+        <button class="btn" onclick="select(this,'depense','10-15')">10 000 à 15 000 FCFA</button>
+
+        <p>6. Quelle est ta situation de revenus ?</p>
+        <button class="btn" onclick="select(this,'revenu','zero')">Aucune activité (0 F / semaine)</button>
+        <button class="btn" onclick="select(this,'revenu','petit')">Petite activité (2 500 à 5 000 F / sem)</button>
+        <button class="btn" onclick="select(this,'revenu','autonome')">Plus de 5 000 F / semaine</button>
+
+        <p>7. Veux-tu lancer une activité ?</p>
+        <button class="btn" onclick="select(this,'interet',true)">Oui</button>
+        <button class="btn" onclick="select(this,'interet',false)">Non</button>
+
+        <p>8. Combien te manque-t-il pour lancer ton activité ?</p>
+        <button class="btn" onclick="select(this,'capital','<10000')">Moins de 10 000 FCFA</button>
+        <button class="btn" onclick="select(this,'capital','10-100')">Entre 10 000 et 100 000 FCFA</button>
+        <button class="btn" onclick="select(this,'capital','>100000')">Plus de 100 000 FCFA</button>
+        <button class="btn" onclick="select(this,'capital','none')">Je ne suis pas concernée</button>
+
+        <p>9. Ton blocage principal ?</p>
+        <button class="btn" onclick="select(this,'blocage','argent')">Manque d'argent (Capital)</button>
+        <button class="btn" onclick="select(this,'blocage','autre')">Autre (Temps, Peur, Idée)</button>
+        <button class="btn" onclick="select(this,'blocage','none')">Je ne suis pas concernée</button>
+
+        <p>10. Si tu perds 2 000 F, est-ce grave ?</p>
+        <button class="btn" onclick="select(this,'impact',true)">Oui, c'est grave</button>
+        <button class="btn" onclick="select(this,'impact',false)">Non</button>
+
+        <div class="consent-box">
+            <input type="checkbox" id="consent" style="width: auto;"> 
+            <label for="consent">J'accepte que Mwa$ia analyse mes données.</label>
+        </div>
+
+        <button id="submit-btn" class="submit" onclick="send()">ANALYSER MON PROFIL</button>
+        
+        <div id="result-area"></div>
+
+        <button onclick="deleteData()" class="delete-btn">🗑️ Supprimer mes données</button>
     </div>
-
-    <button id="submit-btn" class="btn submit" onclick="send()">Analyser mon profil</button>
-
-    <div id="result"></div>
-
-    <button class="btn" onclick="deleteData()" style="background:red;color:white;margin-top:40px; font-size:12px; opacity:0.7;">
-      🗑️ Supprimer mes données
-    </button>
-
-  </div>
 </div>
 
 <script>
-let data = {
-  enfants: "",
-  decision_courses: "",
-  marche: "",
-  frequence: "",
-  depense: "",
-  revenu: "",
-  interet: "",
-  blocage: "",
-  impact: ""
+let data = { 
+    enfants: null, decision: "", marche: null, 
+    depense: "", revenu: "", interet: null, 
+    capital: "", blocage: "", impact: null 
 };
 
+// Ta clé API Google Apps Script
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
-function select(element, key, value){
-  let buttons = element.parentNode.querySelectorAll(".btn");
-  buttons.forEach(btn => btn.classList.remove("active"));
-  element.classList.add("active");
-  data[key] = value;
+function select(el, key, val) {
+    el.parentNode.querySelectorAll(".btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    data[key] = val;
 }
 
-async function send(){
-  const btn = document.getElementById("submit-btn");
-  const resultDiv = document.getElementById("result");
-  const consent = document.getElementById("consent").checked;
+async function send() {
+    const btn = document.getElementById("submit-btn");
+    const consent = document.getElementById("consent").checked;
+    const phone = document.getElementById("phone").value;
+    const freq = document.getElementById("freq").value;
 
-  if(!consent){
-    alert("Veuillez accepter les conditions.");
-    return;
-  }
+    if (!phone || !consent || freq === "") {
+        return alert("Numéro, fréquence et consentement requis pour continuer.");
+    }
 
-  if(!data.decision_courses || !data.marche || !data.revenu || !data.interet || !data.impact){
-    alert("Merci de répondre à toutes les questions.");
-    return;
-  }
-
-  btn.innerText = "⏳ Analyse Mwa$ia en cours...";
-  btn.disabled = true;
-  resultDiv.innerHTML = "<p style='text-align:center; color: #1a4d2e;'><i>L'intelligence artificielle analyse tes réponses...</i></p>";
-
-  data.phone = document.getElementById("phone").value;
-  data.consent = true;
-
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(data)
-    });
-
-    const r = await response.json();
+    btn.innerText = "⏳ Analyse en cours...";
+    btn.disabled = true;
     
-    let content = `<div class="result">
-      <b>Analyse terminée !</b><br>
-      Score : ${r.score || 0}/100<br>
-      Profil : ${r.profil || "En cours"}<br>
-    `;
+    data.phone = phone;
+    data.freq = freq;
 
-    if(r.profil === "PRETE"){
-      content += `
-        <br>🔥 Félicitations ! Tu es prête pour l'étape suivante.<br>
-        <a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk" class="wa-btn">🚀 Rejoindre le groupe privé</a>
-      `;
-    } else {
-      content += `<br>💪 Ton profil est en cours de structuration. On te contacte bientôt !`;
+    try {
+        const response = await fetch(SCRIPT_URL, { 
+            method: "POST", 
+            body: JSON.stringify(data) 
+        });
+        const r = await response.json();
+        
+        if (r.result === "error" && r.error === "DOUBLON_DETECTE") {
+            alert("⚠️ Erreur : Ce numéro a déjà été utilisé pour ce questionnaire.");
+        } else if (r.result === "success") {
+            document.getElementById("result-area").innerHTML = `
+                <div class="result">
+                    ✅ Analyse terminée !<br>
+                    Score : ${r.score} / 100<br>
+                    Profil : ${r.profil}
+                </div>`;
+            document.getElementById("result-area").scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert("Une erreur technique est survenue.");
+        }
+    } catch (e) { 
+        alert("Erreur de connexion. Vérifiez votre accès internet."); 
     }
     
-    content += `</div>`;
-    resultDiv.innerHTML = content;
-
-  } catch (e) {
-    resultDiv.innerHTML = "<p style='color:red;'>Erreur de connexion.</p>";
-  } finally {
-    btn.innerText = "Analyser mon profil";
+    btn.innerText = "ANALYSER MON PROFIL";
     btn.disabled = false;
-  }
 }
 
-async function deleteData(){
-  let phone = document.getElementById("phone").value;
-  if(!phone) { alert("Entre ton numéro."); return; }
-  if(!confirm("Supprimer tes données définitivement ?")) return;
-
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "delete", phone: phone })
-    });
-    const r = await response.json();
-    alert(r.status === "deleted" ? "Données supprimées." : "Numéro non trouvé.");
-  } catch (e) {
-    alert("Erreur lors de la suppression.");
-  }
+async function deleteData() {
+    const phone = document.getElementById("phone").value;
+    if (!phone) return alert("Entrez votre numéro pour identifier les données à supprimer.");
+    
+    if (confirm("Confirmez-vous la suppression de vos données personnelles en interne ?")) {
+        try {
+            await fetch(SCRIPT_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ action: "delete", phone: phone }) 
+            });
+            alert("Demande de suppression prise en compte.");
+            location.reload();
+        } catch (e) {
+            alert("Erreur lors de la suppression.");
+        }
+    }
 }
 </script>
-
 </body>
 </html>
