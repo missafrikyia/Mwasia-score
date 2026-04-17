@@ -9,26 +9,21 @@
         .container { max-width: 450px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { color: #1a4d2e; text-align: center; margin-top: 5px; }
-        
         .alert-doublon { 
             background: #fff3f3; color: #b71c1c; padding: 12px; border-radius: 8px; 
             font-size: 13px; border: 1px solid #ffcdd2; margin-bottom: 20px;
             text-align: center; font-weight: bold;
         }
-
         p { font-weight: bold; margin-top: 15px; font-size: 14px; color: #1a4d2e; }
         .btn { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; }
         .btn.active { background: #1a4d2e; color: white; border-color: #1a4d2e; font-weight: bold; }
         input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        
         .submit { background: black; color: white; font-weight: bold; text-align: center; border: none; margin-top: 25px; cursor: pointer; width: 100%; padding: 15px; border-radius: 8px; font-size: 16px; }
-        
         .result { background: #e8f5e9; padding: 15px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #1a4d2e; }
         .whatsapp-btn { 
             display: block; background: #25D366; color: white; text-decoration: none; 
             text-align: center; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 15px;
         }
-        
         .delete-btn { background: none; color: #d32f2f; border: 1px solid #d32f2f; margin-top: 30px; font-size: 11px; width: 100%; padding: 8px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
@@ -51,7 +46,7 @@
 
         <p>2. Qui décide des courses chez toi ?</p>
         <button class="btn" onclick="select(this,'decision','moi')">Moi</button>
-        <button class="btn" onclick="select(this,'decision','autre')">Quelqu'un d'autre</button>
+        <button class="btn" onclick="select(this,'decision','autre')">Autre</button>
 
         <p>3. Vas-tu au marché toi-même ?</p>
         <button class="btn" onclick="select(this,'marche',true)">Oui</button>
@@ -81,8 +76,8 @@
         <button class="btn" onclick="select(this,'capital','none')">Je ne suis pas concernée</button>
 
         <p>9. Ton blocage principal ?</p>
-        <button class="btn" onclick="select(this,'blocage','argent')">Manque d'argent (Capital)</button>
-        <button class="btn" onclick="select(this,'blocage','autre')">Autre (Temps, Peur, Idée)</button>
+        <button class="btn" onclick="select(this,'blocage','argent')">Manque d'argent</button>
+        <button class="btn" onclick="select(this,'blocage','autre')">Autre</button>
         <button class="btn" onclick="select(this,'blocage','none')">Je ne suis pas concernée</button>
 
         <p>10. Si tu perds 2 000 F, est-ce grave ?</p>
@@ -104,8 +99,6 @@
 
 <script>
 let data = { enfants:null, decision: "", marche: null, depense: "", revenu: "", interet: null, capital: "", blocage: "", impact: null };
-
-// Ton URL Google Apps Script (AKfy...)
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyku_7gZMzoxR_emrbfW9Er5phBQMLBuNdpyZqrz1MLsPHfQO0wWdkZ33Q2-gGquzZRwQ/exec";
 
 function select(el, key, val) {
@@ -139,20 +132,28 @@ async function send() {
             if (r.profil === "PRETE") {
                 actionHtml = `
                     <p style="color:#1a4d2e;">🌟 Félicitations ! Vous êtes éligible.</p>
-                    <a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" class="whatsapp-btn" target="_blank">
+                    <a href="https://chat.whatsapp.com/BtkRIy4iZmIEJlmsm2Dtzk?mode=gi_t" 
+                       class="whatsapp-btn" 
+                       target="_blank" 
+                       onclick="markWhatsAppClick('${phone}')">
                         REJOINDRE LE GROUPE WHATSAPP
                     </a>`;
             } else {
-                actionHtml = `<p>Merci ! Nous vous recontacterons si besoin.</p>`;
+                actionHtml = `<p>Merci ! Votre profil a été enregistré.</p>`;
             }
-
             resDiv.innerHTML = `<div class="result">Score: ${r.score}/100 - Profil: <strong>${r.profil}</strong>${actionHtml}</div>`;
             resDiv.scrollIntoView({ behavior: 'smooth' });
         }
     } catch (e) { alert("Erreur de connexion."); }
-    
     btn.innerText = "ANALYSER MON PROFIL";
     btn.disabled = false;
+}
+
+function markWhatsAppClick(userPhone) {
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "click_wa", phone: userPhone })
+    });
 }
 
 async function deleteData() {
